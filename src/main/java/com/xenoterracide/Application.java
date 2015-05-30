@@ -10,14 +10,15 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.session.ExpiringSession;
+import org.springframework.session.MapSessionRepository;
+import org.springframework.session.SessionRepository;
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.session.web.http.HttpSessionStrategy;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@EnableRedisHttpSession
 @SpringBootApplication
 public class Application {
 
@@ -30,6 +31,12 @@ public class Application {
 	@Configuration
 	@Order( SecurityProperties.ACCESS_OVERRIDE_ORDER )
 	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+
+		@Bean
+		static SessionRepository<? extends ExpiringSession> repository() {
+			return new MapSessionRepository( );
+		}
 
 
 		@Bean

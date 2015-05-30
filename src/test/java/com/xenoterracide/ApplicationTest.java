@@ -23,38 +23,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-	@RunWith( SpringJUnit4ClassRunner.class )
-	@WebAppConfiguration
-	@SpringApplicationConfiguration( classes = { MockServletContext.class, Application.class } )
-	public class ApplicationTest {
+@RunWith( SpringJUnit4ClassRunner.class )
+@WebAppConfiguration
+@SpringApplicationConfiguration( classes = {MockServletContext.class, Application.class} )
+public class ApplicationTest {
 
-		private MockMvc mockMvc = null;
-		private MockHttpServletRequestBuilder requestBuilder;
-		@Autowired private WebApplicationContext context;
-		@Autowired private FilterChainProxy springSecurityFilterChain;
+	private MockMvc mockMvc = null;
+	private MockHttpServletRequestBuilder requestBuilder;
+	@Autowired private WebApplicationContext context;
+	@Autowired private FilterChainProxy springSecurityFilterChain;
 
-		@Before
-		public void setup() {
-			mockMvc = MockMvcBuilders.webAppContextSetup( context )
-					.addFilter( springSecurityFilterChain )
-					.build();
+	@Before
+	public void setup() {
+		mockMvc = MockMvcBuilders.webAppContextSetup( context )
+				.addFilter( springSecurityFilterChain )
+				.build();
 
-			requestBuilder = get( "/" )
-					.header( "Authorization", "Basic " + Base64.getEncoder().encodeToString( "admin:admin".getBytes() ) );
-		}
-
-		@Test
-		public void getSessionToken() throws Exception {
-			this.mockMvc.perform( requestBuilder )
-					.andExpect( status().is2xxSuccessful() )
-					.andExpect( header().string( "X-Auth-Token", notNullValue() ) );
-		}
-
-		@Test
-		public void getJessionId() throws Exception {
-		 // response does not agree with an actual browser request which has a JSESSIONID
-			this.mockMvc.perform( requestBuilder )
-					.andExpect( status().is2xxSuccessful() )
-					.andExpect( cookie().doesNotExist( "JSESSIONID" ) );
-		}
+		requestBuilder = get( "/" )
+				.header( "Authorization", "Basic " + Base64.getEncoder().encodeToString( "admin:admin".getBytes() ) );
 	}
+
+	@Test
+	public void getSessionToken() throws Exception {
+		this.mockMvc.perform( requestBuilder )
+				.andExpect( status().is2xxSuccessful() )
+				.andExpect( header().string( "X-Auth-Token", notNullValue() ) );
+	}
+
+	@Test
+	public void getJessionId() throws Exception {
+		// response does not agree with an actual browser request which has a JSESSIONID
+		this.mockMvc.perform( requestBuilder )
+				.andExpect( status().is2xxSuccessful() )
+				.andExpect( cookie().doesNotExist( "JSESSIONID" ) );
+	}
+}
